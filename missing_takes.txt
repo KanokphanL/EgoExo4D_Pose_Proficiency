@@ -1,0 +1,1 @@
+egoexo -o ./ --parts downscaled_takes/448 -y --force --release v2 --uids  

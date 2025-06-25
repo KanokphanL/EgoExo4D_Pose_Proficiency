@@ -1,0 +1,79 @@
+GPUS: '0'
+OUTPUT_DIR: 'output' # automatically change it to OUTPUT_DIR/yaml file name/timestamp /, which will store the model, log, tensorboard, and so on
+WORKERS_PARALLEL: 16
+WORKERS_DATALOADER: 16
+
+SELECT_MODEL: 'EgoVideoResnet3D'
+SELECT_OUTPUT_HEAD: ''
+
+DATASET:
+  NAME: 'DemonstratorProficiencyDataset'  
+  ROOT_DIR: './data'
+  FRAME_STRIDE: 3
+  WINDOW_LENGTH: 16
+  VIDEO_CLIP_LEN: 4
+  IMAGE_DIR:  'takes_image_downscaled_448' #'takes_image_downscaled_448'
+  PADDING_MODE: 'repeat' # 'zero' or 'repeat'
+  ANNOTATION_STRIDE_TRAIN: 1
+  ANNOTATION_STRIDE_VAL: 1
+  ANNOTATION_STRIDE_TRAINVAL: 1
+  # MIN_JOINT_NUM: 10 # when annotated joints are less than this, the data will be ignored (@Frozen = 10, if 'USE_IMAGE_MODE' is 'downscaled') 
+  USE_ANNOTATION_MODE: 'annotation' # 'annotation' or 'automatic' or 'both' (@Frozen='annotation', if 'USE_IMAGE_MODE' is 'downscaled') 
+  # USE_IMAGE_MODE: 'downscaled' # 'none' or 'fullsize' or 'downscaled'
+  ORIGINAL_IMAGE_SIZE:
+    - 448
+    - 448
+  IMAGE_SIZE:
+    - 224
+    - 224
+  SAMPLE_RATE: 5
+  SCALE:   
+  DUMMY_SUMISSION_PATh: 'annotations/proficiency_demonstrator_dummy_submission.json'
+  # USE_IMU: true # true for using IMU data
+  TAKE_NUM_TRAIN: 
+  TAKE_NUM_VAL: 
+  TAKE_NUM_TEST: 
+
+MODEL:
+
+  BACKBONE:
+    TYPE: 'r3d_18' #'resnet'
+    PRETRAINED: True
+    LOCAL_PRETRAINED_PATH: null
+    EMBED_DIM: 512 # 2048
+    POOLING: 'avg' # 'avg' or 'max' or 'attn'
+
+  TEMPORAL_FUSION: 
+  OUTPUT_HEAD:
+      TYPE: 'mlp' # 'transfromer_decoder'
+      FEATURE_DIM: 512 # 256 + 512 + 512
+      HIDDEN_DIM: 256
+      DROPOUT: 0
+      NUM_CLASSES: 4
+
+TRAIN:
+  FLAG_USE_TRAINVAL_DATASET: false # if true, use train and val dataset to train the model, otherwise use only train dataset
+  PRETRAINED_MODEL: 
+  BATCH_SIZE: 64 #16
+  SHUFFLE: true # false for test image loading
+  LOSS_CRITERION: 'CrossEntropyLoss' # 'FocalLoss'
+  CLASS_WEIGHTS: [0.5, 1.0, 2.0, 2.0]
+  OPTIMIZER: 'AdamW' # 'Adam' or 'AdamW'
+  LR: 0.0001 # origin 0.0005
+  WEIGHT_DECAY: 0.001
+  LR_MIN: 0.000001 # minimum learning rate for AdamW
+  BEGIN_EPOCH: 0
+  END_EPOCH: 1
+  SAVE_INTERVAL: 5  # save model every SAVE_INTERVAL epochs
+  ANNOTATIONS: 
+  
+VAL:
+  BATCH_SIZE: 64 #16
+  LOSS_CRITERION: 'CrossEntropyLoss' #'MPJPELoss'
+  SHUFFLE: false
+  ANNOTATIONS:
+
+TEST:
+  BATCH_SIZE: 64 #16
+  SHUFFLE: false
+  ANNOTATIONS:
