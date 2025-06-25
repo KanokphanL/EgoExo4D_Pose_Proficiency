@@ -1,5 +1,5 @@
 # image + IMU fusion
-CUDA_VISIBLE_DEVICES=1  python train.py --config_path config/v20_ego_vit-s_6frame_sampling-by-videos_repeat100.yaml
+CUDA_VISIBLE_DEVICES=0 python train.py --config_path config/v20_ego_vit-s_6frame_sampling-by-videos_repeat100.yaml
 
 # python dist_train.py --dist --config_path config/v77_egofusion_r3d-18-image_imu_r3d-18-depth-base_mlp-head_8clip_avg-pooling.yaml 
 
@@ -30,10 +30,3 @@ python tools/create_annotations/create_annotations.py
 # generate ego body pose, should add ego-bodypose project. 
 python tools/generate_ego_body_pose.py
 
-# InternVL 
-python predict_by_intervl.py --model_name InternVL3-1B --num_segments 256 --max_num 12 --egoexo exo --new_label
-python predict_by_intervl.py --model_name InternVL3-2B --num_segments 32 --max_num 12 --egoexo exo
-python predict_by_intervl.py --model_name InternVL3-8B --num_segments 32 --max_num 12 --egoexo exo
-python predict_by_intervl.py --model_name InternVL3-8B --num_segments 64 --max_num 12
-python predict_by_intervl.py --model_name InternVL3-14B --num_segments 32 --max_num 12
-python predict_by_intervl.py --model_name InternVL3-14B --num_segments 64 --max_num 12
